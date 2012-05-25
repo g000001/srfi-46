@@ -1,0 +1,1 @@
+This is the stub README.org for the "srfi-46" project.
