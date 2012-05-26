@@ -6,7 +6,8 @@
   :serial t
   :depends-on (:fiveam
                :named-readtables
-               :rnrs-compat)
+               :rnrs-compat
+               :quasiquote1)
   :components ((:file "package")
                (:file "readtable")
                (:file "srfi-46")
