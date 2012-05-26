@@ -886,7 +886,7 @@
                            (or test (error "Malformed " builtin " expression: " sexp)) )
                          (cons builtin
                                (cl:case builtin
-                                 ((lambda)
+                                 ((lambda cl:lambda)
                                   (expr-assert (= len 2))
                                   (expand-lambda (car tail) (cadr tail)
                                                  id-n env store loc-n))
@@ -924,7 +924,8 @@
                           (funcall (get-dk sexp) builtin sexp id-n env store loc-n) )
                          (cl:otherwise (funcall (get-ek sexp) (handle-expr-builtin))) ))))))
            (define-function (handle-combination output)
-             (funcall ek (if (and (pair? output) (eq? 'lambda (car output))
+             (funcall ek (if (and (pair? output) (or (eq? 'lambda (car output))
+                                                     (eq? 'cl:lambda (car output)))
                           (null? (cadr output)) (null? (cdr sexp)))
                      ;; simplifies ((lambda () <expr>)) to <expr>
                      (cl:caddr output)
@@ -1427,7 +1428,8 @@
 
 (cl:defparameter builtins-store
   (let loop ((bs '(begin define define-syntax if lambda quote set! delay
-			 let-syntax syntax-rules))
+			 let-syntax syntax-rules
+                   cl:lambda))
 	     (store empty-store))
     (if (null? bs)
 	store
@@ -1483,11 +1485,18 @@
 	;; Prototype-style define and lambda with internal definitions
 	;; are implemented in define-protected-macros with let-syntax
 	;; scope so that they can access the builtin define and lambda.
-	(define-protected-macros let-syntax (lambda define let-syntax) ()
+	(define-protected-macros let-syntax (lambda define let-syntax cl:lambda) ()
 	  (define-syntax lambda
 	    (syntax-rules ()
 	      ((lambda args . body)
 	       (lambda args (let-syntax () . body)))))
+          (define-syntax cl:lambda
+	    (syntax-rules ()
+	      #|((cl:lambda (var ***) (cl:declare decl ***) . body)
+	       (cl:lambda (var ***) (cl:locally (cl:declare decl ***)
+                                      (let-syntax () . body))))|#
+              ((cl:lambda (var ***) . body)
+	       (cl:lambda (var ***) (let-syntax () . body)))))
 	  (define-syntax define
 	    (syntax-rules ()
 	      ((_ expr) (define expr))
@@ -1505,11 +1514,20 @@
 	       ((letrec ((name (lambda (var ***) . body)))
 		  name)
 		init ***))))
+          (define-syntax cl:let
+	    (syntax-rules ()
+	      ((_ ((var init) ***) . body)
+	       ((cl:lambda (var ***) . body) init ***))))
 	  (define-syntax let*
 	    (syntax-rules ()
 	      ((_ () . body) (let () . body))
 	      ((let* ((var init) . bindings) . body)
 	       (let ((var init)) (let* bindings . body)))))
+          (define-syntax cl:let*
+	    (syntax-rules ()
+	      ((_ () . body) (cl:let () . body))
+	      ((cl:let* ((var init) . bindings) . body)
+	       (cl:let ((var init)) (cl:let* bindings . body)))))
 	  (define-syntax letrec
 	    (syntax-rules ()
 	      ((_ ((var init) ***) . body)
