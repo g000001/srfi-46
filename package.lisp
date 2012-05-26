@@ -4,7 +4,8 @@
 
 (defpackage :srfi-46
   (:use)
-  (:export))
+  (:export :define-syntax :syntax-rules :let-syntax :letrec-syntax
+           :***))
 ;(g1:delete-package* :srfi-46.internal)
 (defpackage :srfi-46.internal
   (:use :srfi-46 :srfi-23 :rnrs :named-readtables :fiveam)
@@ -12,4 +13,7 @@
                 :define-function
                 :with-local-define-function)
   (:import-from :cl :funcall :nil)
-  (:shadowing-import-from :cl :quote))
+  (:shadowing-import-from :cl :quote)
+  (:shadowing-import-from :srfi-46
+                          :define-syntax :syntax-rules :let-syntax :letrec-syntax
+                          :***))

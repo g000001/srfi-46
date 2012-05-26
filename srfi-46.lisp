@@ -3,10 +3,6 @@
 (cl:in-package :srfi-46.internal)
 (in-readtable :quasiquote)
 
-(def-suite srfi-46)
-
-(in-suite srfi-46)
-
 ;; alexpander.scm: a macro expander for scheme.
 ;; [RCS tag expunged: this is alexpander 1.58 from petrofsky.org/src]
 
@@ -729,7 +725,8 @@
 (define-function (symloc->var sym)
   (let ((str (symbol->string sym)))
     (with-local-define-function
-      (define-function (rename) (string->symbol (string-append "_" str "_")))
+      ;; (define-function (rename) (string->symbol (string-append "_" str "_")))
+      (define-function (rename) (cl:make-symbol (string-append "_" str "_")))
       :in
       (cl:case sym
         ((begin define delay if lambda letrec quote set!) (rename))
@@ -744,7 +741,9 @@
 ;; the output more decipherable to humans.
 (define-function (intloc->var intloc sid)
   (let ((str (symbol->string (sid-name sid))))
-    (string->symbol (string-append "_" str "_" (number->string intloc))) ))
+    ;; (string->symbol (string-append "_" str "_" (number->string intloc)))
+    (cl:make-symbol (string-append "_" str "_" (number->string intloc)))
+    ))
 
 (define-function (loc->var loc sid)
   (if (symbol? loc)
@@ -1500,7 +1499,7 @@
 	  (define-syntax let
 	    (syntax-rules ()
 	      ((_ ((var init) ***) . body)
-	       ((lambda (var ***) . body)
+	       (funcall (lambda (var ***) . body)
 		init ***))
 	      ((_ name ((var init) ***) . body)
 	       ((letrec ((name (lambda (var ***) . body)))

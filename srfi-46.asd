@@ -1,4 +1,4 @@
-;;;; srfi-46.asd -*- Mode: Lisp;-*- 
+;;;; srfi-46.asd -*- Mode: Lisp;-*-
 
 (cl:in-package :asdf)
 
@@ -9,7 +9,9 @@
                :rnrs-compat)
   :components ((:file "package")
                (:file "readtable")
-               (:file "srfi-46")))
+               (:file "srfi-46")
+               (:file "cl")
+               (:file "test")))
 
 (defmethod perform ((o test-op) (c (eql (find-system :srfi-46))))
   (load-system :srfi-46)
@@ -19,4 +21,3 @@
            (funcall (_ :fiveam :explain!) result)
            (funcall (_ :fiveam :results-status) result)))
       (error "test-op failed") ))
-
