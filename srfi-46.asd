@@ -7,6 +7,7 @@
   :depends-on (:fiveam
                :named-readtables
                :rnrs-compat
+               :srfi-23
                :quasiquote1)
   :components ((:file "package")
                (:file "readtable")
