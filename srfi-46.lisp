@@ -676,7 +676,7 @@
 ;;   2. For a renamed id, we return the location to which the template
 ;;      literal that created it was bound.
 (define-function (lookup-sid sid env)
-  (cond ((assv (sid-id sid) env) => cdr)
+  (cond ((assv (sid-id sid) env) => #'cdr)
 	;; This works for both cases 1 and 2 above.
 	(else (sid-location sid)) ))
 
@@ -688,7 +688,7 @@
 ;;      and used before it is initialized,
 ;;      e.g. (letrec-syntax ((x x)) 1).
 (define-function (lookup-location location store)
-  (cond ((assv location store) => cdr)
+  (cond ((assv location store) => #'cdr)
 	((symbol? location) (symloc->var location))
 	(else 'NIL) ))
 
@@ -1390,8 +1390,8 @@
                    (cond
                      ((sid? tmpl)
                       (let ((id (sid-id tmpl)))
-                        (cond ((assv id bindings) => cdr)
-                              ((assv id top-bindings) => cdr)
+                        (cond ((assv id bindings) => #'cdr)
+                              ((assv id top-bindings) => #'cdr)
                               (else
                                (let ((index (+ -1 (length (memv id tmpl-literals))))
                                      (location (lookup-sid tmpl mac-env)) )
