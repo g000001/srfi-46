@@ -16,7 +16,6 @@
   (:import-from :cl :funcall :nil)
   (:shadowing-import-from :cl :quote :***)
   (:shadowing-import-from :srfi-46
-                          :define-syntax :syntax-rules :let-syntax :letrec-syntax
-                          :***)
+                          :define-syntax :syntax-rules :let-syntax :letrec-syntax)
   ;; 5am vs srfi-46
   (:shadow :skip))
