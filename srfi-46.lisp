@@ -882,30 +882,32 @@
                                                     lsd? ek sk
                                                     (and lsd? dk) (and lsd? bk))))))))
                        (define-function (handle-expr-builtin)
-                         (define-function (expr-assert test)
-                           (or test (error "Malformed " builtin " expression: " sexp)) )
-                         (cons builtin
-                               (cl:case builtin
-                                 ((lambda cl:lambda)
-                                  (expr-assert (= len 2))
-                                  (expand-lambda (car tail) (cadr tail)
-                                                 id-n env store loc-n))
-                                 ((quote)
-                                  (expr-assert (= len 1))
-                                  (list (unwrap-vecs (car tail))) )
-                                 ((set!)
-                                  (expr-assert (and (= len 2) (sid? (car tail))))
-                                  (let ((var (lookup2 (car tail) env store)))
-                                    #|(cl:print (list :====> var))|#
-                                    (or (variable? var)
-                                        (error "Attempt to set a keyword: " sexp) )
-                                    (list var (expand-subexpr (cadr tail))) ))
-                                 ((if)
-                                  (expr-assert (<= 2 len 3))
-                                  (map #'expand-subexpr tail) )
-                                 ((delay)
-                                  (expr-assert (= len 1))
-                                  (list (expand-subexpr (car tail))) ))))
+                         (with-local-define-function 
+                           (define-function (expr-assert test)
+                             (or test (error "Malformed " builtin " expression: " sexp)) )
+                           :in
+                           (cons builtin
+                                 (cl:case builtin
+                                   ((lambda cl:lambda)
+                                    (expr-assert (= len 2))
+                                    (expand-lambda (car tail) (cadr tail)
+                                                   id-n env store loc-n))
+                                   ((quote)
+                                    (expr-assert (= len 1))
+                                    (list (unwrap-vecs (car tail))) )
+                                   ((set!)
+                                    (expr-assert (and (= len 2) (sid? (car tail))))
+                                    (let ((var (lookup2 (car tail) env store)))
+                                      #|(cl:print (list :====> var))|#
+                                      (or (variable? var)
+                                          (error "Attempt to set a keyword: " sexp) )
+                                      (list var (expand-subexpr (cadr tail))) ))
+                                   ((if)
+                                    (expr-assert (<= 2 len 3))
+                                    (map #'expand-subexpr tail) )
+                                   ((delay)
+                                    (expr-assert (= len 1))
+                                    (list (expand-subexpr (car tail))) )))))
                        :in
                        (cl:case builtin
                          ((let-syntax) (handle-macro-block))

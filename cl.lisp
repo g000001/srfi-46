@@ -5,7 +5,8 @@
 
 (cl:defmacro define-syntax (cl:&whole whole name cl:&body body)
   (cl:declare (cl:ignore body))
-  `(cl:progn
+  #+lispworks (cl:declare (hcl:lambda-list name cl:&body body))
+  `(cl:eval-when (:compile-toplevel :load-toplevel :execute)
      (expand-top-level-forms!
       (list ',whole)
       *cl-define-syntax-mstore*)
