@@ -1,6 +1,6 @@
 ;;;; readtable.lisp
 
-(cl:in-package :srfi-46.internal)
+(cl:in-package "https://github.com/g000001/srfi-46#internals")
 (in-readtable :common-lisp)
 
 #|(defreadtable :srfi-46  (:merge :standard)

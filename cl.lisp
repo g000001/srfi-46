@@ -1,4 +1,4 @@
-(cl:in-package :srfi-46.internal)
+(cl:in-package "https://github.com/g000001/srfi-46#internals")
 (in-readtable :quasiquote)
 
 (cl:defparameter *cl-define-syntax-mstore* (null-mstore))

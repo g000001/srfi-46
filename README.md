@@ -1,5 +1,7 @@
-* SRFI 46: Basic Syntax-rules Extensions
-- Copyright (C) Taylor Campbell (2005). All Rights Reserved.
+# SRFI 46 for Common Lisp: Basic Syntax-rules Extensions
+
+* Copyright (C) Taylor Campbell (2005). All Rights Reserved.
+* License: GPL 2.0
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the

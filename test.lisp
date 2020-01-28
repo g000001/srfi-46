@@ -1,14 +1,14 @@
-(cl:in-package :srfi-46.internal)
+(cl:in-package "https://github.com/g000001/srfi-46#internals")
 (in-readtable :quasiquote)
 
-(def-suite srfi-46)
+(5am:def-suite srfi-46)
 
-(in-suite srfi-46)
+(5am:in-suite srfi-46)
 
 (define-syntax isqu
   (syntax-rules ()
     ((_ x y)
-     (is (equal? x y)))))
+     (5am:is (equal? x y)))))
 
 (define-syntax isquq
   (syntax-rules ()
@@ -18,11 +18,11 @@
 (define-syntax isqp
   (syntax-rules ()
     ((_ x y)
-     (is (cl:tree-equal x y
-                        :test (lambda (a b)
-                                (cl:string-equal
-                                 (cl:write-to-string a)
-                                 (cl:write-to-string b))))))))
+     (5am:is (cl:tree-equal x y
+                            :test (lambda (a b)
+                                    (cl:string-equal
+                                     (cl:write-to-string a)
+                                     (cl:write-to-string b))))))))
 
 (test |Expand-Top-Level-Forms|
   (isquq (car (expand-top-level-forms '(1.23

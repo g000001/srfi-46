@@ -1,6 +1,6 @@
 ;;;; srfi-46.lisp
 
-(cl:in-package :srfi-46.internal)
+(cl:in-package "https://github.com/g000001/srfi-46#internals")
 (in-readtable :quasiquote)
 
 ;; alexpander.scm: a macro expander for scheme.
@@ -1713,31 +1713,33 @@
 ;;   #(restart) restarts.
 
 (define-function (alexpander-repl . resume?)
-  ;;(define-function (pp x) (write x) (newline))
-  (define-function (pp x) (cl:pprint x))
-  (define-function (restart)
-    (set! repl-mstore (null-mstore))
-    (for-each #'pp null-output))
-  (define-function (repl)
-    (display "expander> ")
-    (let ((form (read)))
-      (if (not (eof-object? form))
-	  (begin
-	    (if (vector? form)
-		(let ((l (vector->list form)))
-		  (cl:case (car l)
-		    ((dump) (pp (car repl-mstore)))
-		    ((show)
-		     (for-each (lambda (loc)
-				 (pp (assv loc (car repl-mstore))))
-			       (cdr l)))
-		    ((restart) (restart))))
-		(for-each #'pp (expand-top-level-forms! (list form)
-						      repl-mstore)))
-	    (repl)))))
-  (begin
-    (if (null? resume?) (restart))
-    (repl)))
+  (with-local-define-function
+    ;;(define-function (pp x) (write x) (newline))
+    (define-function (pp x) (cl:pprint x))
+    (define-function (restart)
+      (set! repl-mstore (null-mstore))
+      (for-each #'pp null-output))
+    (define-function (repl)
+      (display "expander> ")
+      (let ((form (read)))
+        (if (not (eof-object? form))
+	    (begin
+	      (if (vector? form)
+		  (let ((l (vector->list form)))
+		    (cl:case (car l)
+		      ((dump) (pp (car repl-mstore)))
+		      ((show)
+		       (for-each (lambda (loc)
+				   (pp (assv loc (car repl-mstore))))
+			         (cdr l)))
+		      ((restart) (restart))))
+		  (for-each #'pp (expand-top-level-forms! (list form)
+						          repl-mstore)))
+	      (repl)))))
+    :in
+    (begin
+      (if (null? resume?) (restart))
+      (repl))))
 
 
 #||||
