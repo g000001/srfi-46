@@ -18,7 +18,6 @@ https://srfi.schemers.org/srfi-46"
                :srfi-23
                :quasiquote1)
   :components ((:file "package")
-               ;; (:file "readtable")
                (:file "srfi-46")
                (:file "cl")))
 
